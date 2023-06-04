@@ -41,15 +41,39 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     USERNAME_FIELD = 'email'
 
+
 class Recipe(models.Model):
     """Recipe object"""
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     time_in_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
-    link = models.CharField(max_length=255)
+    link = models.CharField(max_length=255, blank=True)
+    tags = models.ManyToManyField('Tag')
+    ingredients = models.ManyToManyField('Ingredient')
 
     def __str__(self) -> str:
         return self.title
+
+
+class Tag(models.Model):
+    """Tag for filtering recipes"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Ingredient(models.Model):
+    """Tag for filtering recipes"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
